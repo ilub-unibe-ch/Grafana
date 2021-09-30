@@ -20,7 +20,7 @@ if (!$db->tableExists(ilGrafanaPlugin::TABLE_NAME)) {
     )
     );
     $db->createTable(ilGrafanaPlugin::TABLE_NAME, $fields);
-    $db->addPrimaryKey(ilGrafanaPlugin::SES_LOG_TABLE, array('metric'));
+    $db->addPrimaryKey(ilGrafanaPlugin::TABLE_NAME, array('metric'));
 }
 ?>
 <#2>
