@@ -11,7 +11,7 @@ class RunTest extends PHPUnit\Framework\TestCase
     protected $RunSync;
     protected $mockDBAccess;
 
-    protected function setUp()
+    protected function setUp():void
     {
 
         $this->mockDBAccess      = Mockery::mock(iLUB\Plugins\Grafana\Helper\GrafanaDBAccess::class);
@@ -52,7 +52,7 @@ class RunTest extends PHPUnit\Framework\TestCase
 
     }
 
-    public function tearDown()
+    public function tearDown():void
     {
         Mockery::close();
     }

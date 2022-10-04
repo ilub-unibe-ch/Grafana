@@ -62,3 +62,26 @@ if (!$db->tableExists(ilGrafanaPlugin::SES_LOG_TABLE)) {
 
 }
 ?>
+
+<#3>
+<?php
+global $ilDB;
+$db = $ilDB;
+require_once('Customizing/global/plugins/Services/Cron/CronHook/Grafana/classes/class.ilGrafanaPlugin.php');
+if (!$db->tableExists(ilGrafanaPlugin::DAILY_USERS_TABLE)) {
+    $fields = array(
+        'date' => array(
+            'type' => 'timestamp',
+            'notnull' => true
+        ),
+        'daily_users' => array(
+
+            'type' => 'integer',
+            'length' => '4',
+            'notnull' => true
+        )
+    );
+    $db->createTable(ilGrafanaPlugin::DAILY_USERS_TABLE, $fields);
+    $db->addPrimaryKey(ilGrafanaPlugin::DAILY_USERS_TABLE, array('date'));
+}
+?>
