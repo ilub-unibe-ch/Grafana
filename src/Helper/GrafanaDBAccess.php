@@ -121,6 +121,6 @@ class GrafanaDBAccess implements GrafanaDBInterface
             $rec = $this->db->fetchAssoc($query);
             return $rec['count(usr_data.usr_id)'];
     }
-    
+
 
 }

@@ -135,6 +135,6 @@ class DailyUsersJob extends ilCronJob
 
     public function getDefaultScheduleType()
     {
-        // TODO: Implement getDefaultScheduleType() method.
+        return self::SCHEDULE_TYPE_DAILY;
     }
 }

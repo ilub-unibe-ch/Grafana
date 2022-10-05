@@ -1,4 +1,4 @@
-q<?php
+<?php
 $id                = 'grafana';
 $version           = '1.0.2';
 $ilias_min_version = '5.3.0';
