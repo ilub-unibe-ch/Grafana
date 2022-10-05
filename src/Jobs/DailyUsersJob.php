@@ -60,7 +60,7 @@ class DailyUsersJob extends ilCronJob
      * @return string
      */
     public function getDescription(): string {
-        return "logs the daily users";
+        return "logs how many users logged in during the last 24 hours to the database";
     }
 
 
