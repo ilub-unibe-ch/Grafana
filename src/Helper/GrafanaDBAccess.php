@@ -59,6 +59,9 @@ class GrafanaDBAccess implements GrafanaDBInterface
 
         $sql = "DROP TABLE " . ilGrafanaPlugin::SES_LOG_TABLE;
         $this->db->query($sql);
+
+        $sql = "DROP TABLE " . ilGrafanaPlugin::DAILY_USERS_TABLE;
+        $this->db->query($sql);
     }
 
 
@@ -73,6 +76,16 @@ class GrafanaDBAccess implements GrafanaDBInterface
             'active_during_last_15min' => array('integer', $this->getUsersActiveBetween($timestamp - 900, $timestamp)),
             'active_during_last_hour'  => array('integer', $this->getUsersActiveBetween($timestamp - 3600, $timestamp))
         ));
+    }
+
+    public function logDailyUsersToDB()
+    {
+        $timestamp = time();
+        $this->db->insert("grafana_daily_user", array(
+            'date'                     => array('datetime', date('Y-m-d H:i:s', $timestamp)),
+            'daily_users'              => array('integer', $this->getUsersLoggedInToday($timestamp))
+        ));
+
     }
 
     /**
@@ -99,5 +112,15 @@ class GrafanaDBAccess implements GrafanaDBInterface
         $rec   = $this->db->fetchAssoc($query);
         return $rec['count(distinct usr_session.user_id)'];
     }
+
+
+    public function getUsersLoggedInToday($timestamp){
+            $today = date('Y-m-d H:i:s', $timestamp- 86400);
+            $sql = "SELECT count(usr_data.usr_id) from usr_data where last_login >= '" . $today . "'";
+            $query = $this->db->query($sql);
+            $rec = $this->db->fetchAssoc($query);
+            return $rec['count(usr_data.usr_id)'];
+    }
+
 
 }

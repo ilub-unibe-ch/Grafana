@@ -4,6 +4,7 @@ require_once __DIR__ . "/../vendor/autoload.php";
 
 use iLUB\Plugins\Grafana\Helper\GrafanaDBAccess;
 use iLUB\Plugins\Grafana\Jobs\RunSync;
+use iLUB\Plugins\Grafana\Jobs\DailyUsersJob;
 
 
 /**
@@ -17,6 +18,7 @@ class ilGrafanaPlugin extends ilCronHookPlugin
     const PLUGIN_NAME = 'Grafana';
     const TABLE_NAME = 'grafana_config';
     const SES_LOG_TABLE = 'grafana_ses_log';
+    const DAILY_USERS_TABLE = 'grafana_daily_user';
 
 
     /**
@@ -54,7 +56,7 @@ class ilGrafanaPlugin extends ilCronHookPlugin
     public function getCronJobInstances() : array
     {
 
-        return [new RunSync()];
+        return [new RunSync(), new DailyUsersJob()];
     }
 
     /**
@@ -63,7 +65,15 @@ class ilGrafanaPlugin extends ilCronHookPlugin
      */
     public function getCronJobInstance($runSync) : ilCronJob
     {
-        return  new RunSync();
+        switch ($runSync) {
+            case RunSync::CRON_JOB_ID:
+                return new RunSync();
+
+            case DailyUsersJob::CRON_JOB_ID:
+                return new DailyUsersJob();
+
+
+        }
     }
 
     /**

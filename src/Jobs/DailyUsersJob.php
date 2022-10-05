@@ -2,24 +2,14 @@
 
 namespace iLUB\Plugins\Grafana\Jobs;
 
-use Exception;
-use ilCronJob;
 use iLUB\Plugins\Grafana\Helper\GrafanaDBAccess;
+use ilCronJob;
 
-
-/**
- * Class RunSync
- * This class has to run the Cron Job
- * @package iLUB\Plugins\Grafana\Jobs
- */
-class RunSync extends ilCronJob
+class DailyUsersJob extends ilCronJob
 {
 
-    const CRON_JOB_ID  = "sess_log";
-    /**
-     * @var
-     */
-    protected $dic;
+    const CRON_JOB_ID  = "daily_users";
+
 
     /**
      * @var \ilCronJobResult
@@ -48,14 +38,31 @@ class RunSync extends ilCronJob
             $this->db_access = new grafanaDBAccess($this->dic);
         }
     }
+    /**
+     * Get id
+     *
+     * @return string
+     */
+    public function getId(): string {
+        return self::CRON_JOB_ID;
+    }
+
 
     /**
      * @return string
      */
-    public function getId()
-    {
-        return self::CRON_JOB_ID;
+    public function getTitle(): string {
+        return "Grafana: Daily Users";
     }
+
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string {
+        return "logs how many users logged in during the last 24 hours to the database";
+    }
+
 
     /**
      * @return bool
@@ -73,20 +80,13 @@ class RunSync extends ilCronJob
         return true;
     }
 
-    /**
-     * @return int
-     */
-    public function getDefaultScheduleType()
-    {
-        return ilCronJob::SCHEDULE_TYPE_DAILY;
-    }
 
     /**
      * @return null
      */
     public function getDefaultScheduleValue()
     {
-        return 1;
+        return ilCronJob::SCHEDULE_TYPE_DAILY;
     }
 
     /**
@@ -108,6 +108,7 @@ class RunSync extends ilCronJob
         return $this->db_access;
     }
 
+
     /**
      * @return \ilCronJobResult
      * @throws
@@ -120,7 +121,7 @@ class RunSync extends ilCronJob
         try {
 
             $tc = $this->getDBAccess();
-            $tc->logsessionsToDB();
+            $tc->logDailyUsersToDB();
 
             $jobResult->setStatus($jobResult::STATUS_OK);
             $jobResult->setMessage("Everything worked fine.");
@@ -130,5 +131,10 @@ class RunSync extends ilCronJob
             $jobResult->setMessage("There was an error.");
             return $jobResult;
         }
+    }
+
+    public function getDefaultScheduleType()
+    {
+        return self::SCHEDULE_TYPE_DAILY;
     }
 }
