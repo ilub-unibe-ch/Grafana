@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 namespace iLUB\Plugins\Grafana\Helper;
 
 interface GrafanaDBInterface
@@ -20,7 +20,7 @@ interface GrafanaDBInterface
      * returns the count of all  active sessions
      * @return  mixed
      */
-    public function getAllSessions();
+    public function getAllSessions(): string;
 
     /**
      * returns how many Users were active during the two timestamps
@@ -28,5 +28,5 @@ interface GrafanaDBInterface
      * @param $timeLate
      * @return mixed
      */
-    public function getUsersActiveBetween($timeEarly, $timeLate);
+    public function getUsersActiveBetween(int $timeEarly, int $timeLate): string;
 }
