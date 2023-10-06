@@ -1,6 +1,5 @@
 <?php
-
-require_once __DIR__ . "/../vendor/autoload.php";
+declare(strict_types=1);
 
 use iLUB\Plugins\Grafana\Helper\GrafanaDBAccess;
 use iLUB\Plugins\Grafana\Jobs\RunSync;
@@ -21,26 +20,14 @@ class ilGrafanaPlugin extends ilCronHookPlugin
     const DAILY_USERS_TABLE = 'grafana_daily_user';
 
 
-    /**
-     * @var ilGrafanaPlugin
-     */
-    protected static $instance;
-    /**
-     * @var $this ->access
-     */
-    protected $db_access;
+    protected static ilGrafanaPlugin $instance;
+    protected GrafanaDBAccess $db_access;
 
-    /**
-     * @return string
-     */
     public function getPluginName() : string
     {
         return self::PLUGIN_NAME;
     }
 
-    /**
-     * @return ilGrafanaPlugin
-     */
     public static function getInstance() : ilGrafanaPlugin
     {
         if (self::$instance === null) {
@@ -59,11 +46,7 @@ class ilGrafanaPlugin extends ilCronHookPlugin
         return [new RunSync(), new DailyUsersJob()];
     }
 
-    /**
-     * @param string $a_job_id
-     * @return ilCronJob
-     */
-    public function getCronJobInstance($runSync) : ilCronJob
+    public function getCronJobInstance(string $runSync) : ilCronJob
     {
         switch ($runSync) {
             case RunSync::CRON_JOB_ID:
@@ -71,15 +54,13 @@ class ilGrafanaPlugin extends ilCronHookPlugin
 
             case DailyUsersJob::CRON_JOB_ID:
                 return new DailyUsersJob();
-
-
         }
     }
 
     /**
      * AfterUninstall deletes the tables from the DB
      */
-    protected function afterUninstall()
+    protected function afterUninstall(): void
     {
         $this->db_access = new GrafanaDBAccess();
         $this->db_access->removePluginTableFromDB();

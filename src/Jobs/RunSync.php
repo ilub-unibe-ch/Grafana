@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 namespace iLUB\Plugins\Grafana\Jobs;
 
 use Exception;
@@ -32,93 +32,68 @@ class RunSync extends ilCronJob
      * @param \ilCronJobResult|null $dic_param
      * Dieses wird ausgeführt, wenn im GUI die Cron-Jobs angezeigt werden.
      */
-    public function __construct(\ilCronJobResult $job_result = null, GrafanaDBAccess $db_access = null, $dic_param=null)
-    {
-        $this->job_result = $job_result;
-        if ($this->job_result == null) {
+    public function __construct(
+        \ilCronJobResult $job_result = null,
+        GrafanaDBAccess $db_access = null,
+        $dic_param = null
+    ) {
+        if ($job_result == null) {
             $this->job_result = new \ilCronJobResult();
+        } else {
+            $this->job_result = $job_result;
         }
-        $this->dic = $dic_param;
-        if ($this->dic==null) {
+        if ($dic_param == null) {
             global $DIC;
             $this->dic = $DIC;
+        } else {
+            $this->dic = $dic_param;
         }
-        $this->db_access = $db_access;
-        if ($this->db_access == null) {
+        if ($db_access == null) {
             $this->db_access = new grafanaDBAccess($this->dic);
+        } else {
+            $this->db_access = $db_access;
         }
     }
 
-    /**
-     * @return string
-     */
-    public function getId()
+    public function getId(): string
     {
         return self::CRON_JOB_ID;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasAutoActivation()
+    public function hasAutoActivation(): bool
     {
         return true;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasFlexibleSchedule()
+    public function hasFlexibleSchedule(): bool
     {
         return true;
     }
 
-    /**
-     * @return int
-     */
-    public function getDefaultScheduleType()
+    public function getDefaultScheduleType(): int
     {
         return ilCronJob::SCHEDULE_TYPE_DAILY;
     }
 
-    /**
-     * @return null
-     */
-    public function getDefaultScheduleValue()
+    public function getDefaultScheduleValue(): int
     {
         return 1;
     }
 
-    /**
-     * @return \ilCronJobResult
-     */
-    public function getJobResult()
+    public function getJobResult(): \ilCronJobResult
     {
-
         return $this->job_result;
-
     }
 
-    /**
-     * @return grafanaDBAccess
-     */
-    public function getDBAccess()
+    public function getDBAccess(): GrafanaDBAccess
     {
-
         return $this->db_access;
     }
 
-    /**
-     * @return \ilCronJobResult
-     * @throws
-     */
-    public function run()
+    public function run(): \ilCronJobResult
     {
-
         $jobResult = $this->getJobResult();
-
         try {
-
             $tc = $this->getDBAccess();
             $tc->logsessionsToDB();
 
@@ -130,5 +105,15 @@ class RunSync extends ilCronJob
             $jobResult->setMessage("There was an error.");
             return $jobResult;
         }
+    }
+
+    public function getTitle() : string
+    {
+        return "Grafana Log";
+    }
+
+    public function getDescription() : string
+    {
+        return " creates DB-Log to show how many users are active in grafana";
     }
 }

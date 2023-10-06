@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 namespace iLUB\Plugins\Grafana\Helper;
 
 /**
@@ -8,32 +8,21 @@ namespace iLUB\Plugins\Grafana\Helper;
  */
 use ilDB;
 use ilGrafanaPlugin;
+use ILIAS\DI\Container;
 
 class GrafanaDBAccess implements GrafanaDBInterface
 {
 
-    /**
-     * @var ilDB
-     */
-    protected $db;
-
-    protected $all_remaining_sessions;
+    protected \ilDBInterface $db;
 
 
+    protected Container $DIC;
 
     /**
-     * @var DIC
-     */
-    protected $DIC;
-
-    /**
-     * GrafanaDBAccess constructor.
-     * @param      $dic
-     * @param null $db
      * @throws \Exception
      */
 
-    public function __construct($dic_param = null, $db_param = null)
+    public function __construct(Container $dic_param = null, \ilDBInterface $db_param = null)
     {
 
         if ($dic_param == null) {
@@ -52,7 +41,7 @@ class GrafanaDBAccess implements GrafanaDBInterface
     /**
      * Removes the table from DB after uninstall is triggered.
      */
-    public function removePluginTableFromDB()
+    public function removePluginTableFromDB(): void
     {
         $sql = "DROP TABLE " . ilGrafanaPlugin::TABLE_NAME;
         $this->db->query($sql);
@@ -65,7 +54,7 @@ class GrafanaDBAccess implements GrafanaDBInterface
     }
 
 
-    public function logsessionsToDB()
+    public function logSessionsToDB(): void
     {
         $timestamp = time();
         $this->db->insert('grafana_ses_log', array(
@@ -78,7 +67,7 @@ class GrafanaDBAccess implements GrafanaDBInterface
         ));
     }
 
-    public function logDailyUsersToDB()
+    public function logDailyUsersToDB(): void
     {
         $timestamp = time();
         $this->db->insert("grafana_daily_user", array(
@@ -91,7 +80,7 @@ class GrafanaDBAccess implements GrafanaDBInterface
     /**
      * @return mixed
      */
-    public function getAllSessions()
+    public function getAllSessions(): string
     {
         $sql   = "SELECT count(*) FROM usr_session";
         $query = $this->db->query($sql);
@@ -105,7 +94,7 @@ class GrafanaDBAccess implements GrafanaDBInterface
      * @param $timeLate
      * @return mixed
      */
-    public function getUsersActiveBetween($timeEarly, $timeLate)
+    public function getUsersActiveBetween(int $timeEarly, int $timeLate): string
     {
         $sql   = "SELECT count(distinct usr_session.user_id) from usr_session where ctime Between '" . $timeEarly . "'and '" . $timeLate . "'";
         $query = $this->db->query($sql);
@@ -114,7 +103,8 @@ class GrafanaDBAccess implements GrafanaDBInterface
     }
 
 
-    public function getUsersLoggedInToday($timestamp){
+    public function getUsersLoggedInToday(int $timestamp): string
+    {
             $today = date('Y-m-d H:i:s', $timestamp- 86400);
             $sql = "SELECT count(usr_data.usr_id) from usr_data where last_login >= '" . $today . "'";
             $query = $this->db->query($sql);

@@ -1,119 +1,87 @@
 <?php
-
+declare(strict_types=1);
 namespace iLUB\Plugins\Grafana\Jobs;
 
 use iLUB\Plugins\Grafana\Helper\GrafanaDBAccess;
 use ilCronJob;
+use ILIAS\DI\Container;
 
 class DailyUsersJob extends ilCronJob
 {
 
     const CRON_JOB_ID  = "daily_users";
 
-
-    /**
-     * @var \ilCronJobResult
-     */
-    protected $job_result;
-    protected $db_access;
+    protected \ilCronJobResult $job_result;
+    protected GrafanaDBAccess $db_access;
+    protected Container $dic;
 
     /**
      * RunSync constructor.
-     * @param \ilCronJobResult|null $dic_param
      * Dieses wird ausgeführt, wenn im GUI die Cron-Jobs angezeigt werden.
      */
-    public function __construct(\ilCronJobResult $job_result = null, GrafanaDBAccess $db_access = null, $dic_param=null)
-    {
-        $this->job_result = $job_result;
-        if ($this->job_result == null) {
+    public function __construct(
+        \ilCronJobResult $job_result = null,
+        GrafanaDBAccess $db_access = null,
+        Container $dic_param = null
+    ) {
+        if ($job_result == null) {
             $this->job_result = new \ilCronJobResult();
+        } else {
+            $this->job_result = $job_result;
         }
-        $this->dic = $dic_param;
-        if ($this->dic==null) {
+        if ($dic_param == null) {
             global $DIC;
             $this->dic = $DIC;
+        } else {
+            $this->dic = $dic_param;
         }
-        $this->db_access = $db_access;
-        if ($this->db_access == null) {
+        if ($db_access == null) {
             $this->db_access = new grafanaDBAccess($this->dic);
+        } else {
+            $this->db_access = $db_access;
         }
     }
-    /**
-     * Get id
-     *
-     * @return string
-     */
+
+
     public function getId(): string {
         return self::CRON_JOB_ID;
     }
 
 
-    /**
-     * @return string
-     */
     public function getTitle(): string {
         return "Grafana: Daily Users";
     }
 
-
-    /**
-     * @return string
-     */
     public function getDescription(): string {
         return "logs how many users logged in during the last 24 hours to the database";
     }
 
-
-    /**
-     * @return bool
-     */
-    public function hasAutoActivation()
+    public function hasAutoActivation(): bool
     {
         return true;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasFlexibleSchedule()
+    public function hasFlexibleSchedule(): bool
     {
         return true;
     }
 
-
-    /**
-     * @return null
-     */
-    public function getDefaultScheduleValue()
+    public function getDefaultScheduleValue(): int
     {
         return ilCronJob::SCHEDULE_TYPE_DAILY;
     }
 
-    /**
-     * @return \ilCronJobResult
-     */
-    public function getJobResult()
+    public function getJobResult(): \ilCronJobResult
     {
-
         return $this->job_result;
-
     }
 
-    /**
-     * @return grafanaDBAccess
-     */
-    public function getDBAccess()
+    public function getDBAccess(): GrafanaDBAccess
     {
-
         return $this->db_access;
     }
 
-
-    /**
-     * @return \ilCronJobResult
-     * @throws
-     */
-    public function run()
+    public function run(): \ilCronJobResult
     {
 
         $jobResult = $this->getJobResult();
@@ -133,7 +101,7 @@ class DailyUsersJob extends ilCronJob
         }
     }
 
-    public function getDefaultScheduleType()
+    public function getDefaultScheduleType(): int
     {
         return self::SCHEDULE_TYPE_DAILY;
     }
