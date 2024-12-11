@@ -86,7 +86,7 @@ class GrafanaDBAccess implements GrafanaDBInterface
         $query = $this->db->query($sql);
         $rec   = $this->db->fetchAssoc($query);
 
-        return $rec['count(*)'];
+        return (string) $rec['count(*)'];
     }
 
     /**
@@ -99,7 +99,7 @@ class GrafanaDBAccess implements GrafanaDBInterface
         $sql   = "SELECT count(distinct usr_session.user_id) from usr_session where ctime Between '" . $timeEarly . "'and '" . $timeLate . "'";
         $query = $this->db->query($sql);
         $rec   = $this->db->fetchAssoc($query);
-        return $rec['count(distinct usr_session.user_id)'];
+        return (string)$rec['count(distinct usr_session.user_id)'];
     }
 
 

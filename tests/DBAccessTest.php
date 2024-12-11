@@ -21,8 +21,8 @@ class DBAccessTest extends PHPUnit\Framework\TestCase
 
         //$this->mockDBAccess=Mockery::mock(iLUB\Plugins\Grafana\Helper\cleanUpSessionsDBAccess::class);
 
-        $this->mockDIC           = Mockery::mock(Pimple\Container::class);
-        $this->mockDB            = Mockery::mock(ilDB::class);
+        $this->mockDIC = Mockery::mock(ILIAS\DI\Container::class);
+        $this->mockDB = Mockery::mock(ilDBInterface::class);
 
     }
 

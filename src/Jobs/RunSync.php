@@ -5,7 +5,7 @@ namespace iLUB\Plugins\Grafana\Jobs;
 use Exception;
 use ilCronJob;
 use iLUB\Plugins\Grafana\Helper\GrafanaDBAccess;
-
+use ILIAS\Cron\Schedule\CronJobScheduleType;
 
 /**
  * Class RunSync
@@ -70,9 +70,9 @@ class RunSync extends ilCronJob
         return true;
     }
 
-    public function getDefaultScheduleType(): int
+    public function getDefaultScheduleType(): CronJobScheduleType
     {
-        return ilCronJob::SCHEDULE_TYPE_DAILY;
+        return CronJobScheduleType::SCHEDULE_TYPE_DAILY;
     }
 
     public function getDefaultScheduleValue(): int

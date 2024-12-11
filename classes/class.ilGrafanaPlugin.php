@@ -49,11 +49,10 @@ class ilGrafanaPlugin extends ilCronHookPlugin
     public function getCronJobInstance(string $runSync) : ilCronJob
     {
         switch ($runSync) {
-            case RunSync::CRON_JOB_ID:
-                return new RunSync();
-
             case DailyUsersJob::CRON_JOB_ID:
                 return new DailyUsersJob();
+            default:
+                return new RunSync();
         }
     }
 

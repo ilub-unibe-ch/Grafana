@@ -5,6 +5,7 @@ namespace iLUB\Plugins\Grafana\Jobs;
 use iLUB\Plugins\Grafana\Helper\GrafanaDBAccess;
 use ilCronJob;
 use ILIAS\DI\Container;
+use ILIAS\Cron\Schedule\CronJobScheduleType;
 
 class DailyUsersJob extends ilCronJob
 {
@@ -68,7 +69,7 @@ class DailyUsersJob extends ilCronJob
 
     public function getDefaultScheduleValue(): int
     {
-        return ilCronJob::SCHEDULE_TYPE_DAILY;
+        return 1;
     }
 
     public function getJobResult(): \ilCronJobResult
@@ -101,8 +102,8 @@ class DailyUsersJob extends ilCronJob
         }
     }
 
-    public function getDefaultScheduleType(): int
+    public function getDefaultScheduleType(): CronJobScheduleType
     {
-        return self::SCHEDULE_TYPE_DAILY;
+        return CronJobScheduleType::SCHEDULE_TYPE_DAILY;
     }
 }
