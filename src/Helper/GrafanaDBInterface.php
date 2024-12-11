@@ -20,7 +20,7 @@ interface GrafanaDBInterface
      * returns the count of all  active sessions
      * @return  mixed
      */
-    public function getAllSessions(): string;
+    public function getAllSessions(): int;
 
     /**
      * returns how many Users were active during the two timestamps
@@ -28,5 +28,5 @@ interface GrafanaDBInterface
      * @param $timeLate
      * @return mixed
      */
-    public function getUsersActiveBetween(int $timeEarly, int $timeLate): string;
+    public function getUsersActiveBetween(int $timeEarly, int $timeLate): int;
 }

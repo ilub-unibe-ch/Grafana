@@ -80,13 +80,13 @@ class GrafanaDBAccess implements GrafanaDBInterface
     /**
      * @return mixed
      */
-    public function getAllSessions(): string
+    public function getAllSessions(): int
     {
         $sql   = "SELECT count(*) FROM usr_session";
         $query = $this->db->query($sql);
         $rec   = $this->db->fetchAssoc($query);
 
-        return (string) $rec['count(*)'];
+        return (int) $rec['count(*)'];
     }
 
     /**
@@ -94,22 +94,22 @@ class GrafanaDBAccess implements GrafanaDBInterface
      * @param $timeLate
      * @return mixed
      */
-    public function getUsersActiveBetween(int $timeEarly, int $timeLate): string
+    public function getUsersActiveBetween(int $timeEarly, int $timeLate): int
     {
         $sql   = "SELECT count(distinct usr_session.user_id) from usr_session where ctime Between '" . $timeEarly . "'and '" . $timeLate . "'";
         $query = $this->db->query($sql);
         $rec   = $this->db->fetchAssoc($query);
-        return (string)$rec['count(distinct usr_session.user_id)'];
+        return (int) $rec['count(distinct usr_session.user_id)'];
     }
 
 
-    public function getUsersLoggedInToday(int $timestamp): string
+    public function getUsersLoggedInToday(int $timestamp): int
     {
             $today = date('Y-m-d H:i:s', $timestamp- 86400);
             $sql = "SELECT count(usr_data.usr_id) from usr_data where last_login >= '" . $today . "'";
             $query = $this->db->query($sql);
             $rec = $this->db->fetchAssoc($query);
-            return $rec['count(usr_data.usr_id)'];
+            return (int) $rec['count(usr_data.usr_id)'];
     }
 
 
